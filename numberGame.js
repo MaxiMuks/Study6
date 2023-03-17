@@ -10,12 +10,15 @@
 
 //리셋버튼 누르면 게임이 리셋됨 ㅇ
 
-//기회는 5번(시도 불가 및 버튼이 disable)
+//기회는 5번(시도 불가 및 버튼이 disable) ㅇ
 
-//1~100 까지만 입력하라는 알림창 띄우기(남은 기회는 그대로~)
+//1~100 까지만 입력하라는 알림창 띄우기(남은 기회는 그대로~) ㅇ
 
-//입력한 값을 한 번더 입력하면 중복이라는 알림창 띄우기(남은 기회는 그대로~)
+//입력한 값을 한 번더 입력하면 중복이라는 알림창 띄우기(남은 기회는 그대로~) ㅇ
 
+//포커스 자동 초기화 ㅇ
+
+//정답 맞춰도 go버튼 disable ㅇ 
 
 let randomNum = 0;
 let playBtn = document.getElementById("Play_Btn");
@@ -26,7 +29,8 @@ let resetBtn = document.getElementById("Reset_Btn");
 let chances = 5;
 let gameOver = false;
 let chanceArea = document.getElementById("Chance_Area");
-let history = []
+let history = [];
+let resultImg = document.getElementById("result_Img")
 
 playBtn.addEventListener("click", play);
 resetBtn.addEventListener("click", reset);
@@ -48,7 +52,14 @@ function play() {
     let userValue = userNum.value
 
     if(userValue< 1 || userValue > 100) {
-        resultArea.textContent = "1부터 100사이 값만 입력하세요!"
+        resultArea.textContent = "1부터 100까지만!!!!!!";
+        resultImg.src = "./img/hong1.JPG";
+        return;
+    }
+
+    if(history.includes(userValue)) {
+        resultArea.textContent = "같은 숫자 말씀하셨는데요~??";
+        resultImg.src = "./img/hong1.JPG";
         return;
     }
 
@@ -60,15 +71,20 @@ function play() {
     chanceArea.textContent = `남은 기회 : ${chances}번`;
 
     if(userValue < randomNum) {
-        resultArea.textContent = "Up!"
+        resultImg.src = "./img/hong4.JPG";
+        resultArea.textContent = "어업!";
+        
     } else if(userValue > randomNum) {
-        resultArea.textContent = "Down!"
+        resultImg.src = "./img/hong2.JPG";
+        resultArea.textContent = "다운!";
     } else {
-        resultArea.textContent = "Good!"
+        resultImg.src = "./img/hong7.JPG";
+        resultArea.textContent = "정답!";
         // gameOver = true;  여기에 적어도 disable됨
     }
-
-    history.push(userValue)
+    //히스토리란 arr안에 userValue값을 넣어(push)준다
+    history.push(userValue);
+    // console.log(history);
 
     // 기회가 1보다 작을때 또는 정답을 맞출때 버튼 disable효과 주기
     if(chances < 1 || userValue == randomNum)  {
@@ -83,10 +99,18 @@ function play() {
 function reset() {
     // 리셋버튼을 누르면 유저가 입력한 숫자가 초기화됨
     userNum.value = "";
+
     // 새로운 랜덤번호 부르기
     pickRandomNum();
+
     // 리셋버튼 누르면 리셋되었다는 멘트 띄우기
-    resultArea.textContent = "리셋이 되었습니다."
+    resultArea.textContent = "재도전!!";
+    gameOver = false;
+    playBtn.disabled = false;
+    resultImg.src = "./img/hong6.JPG";
+    chances = 5;
+    chanceArea.textContent = `남은 기회 : ${chances}번`;
+    history = [];
 }
 
 pickRandomNum();
